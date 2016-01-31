@@ -506,10 +506,51 @@ class msg_mempool(MsgSerializable):
     def __repr__(self):
         return "msg_mempool()"
 
+
+class msg_filterload(MsgSerializable):
+    command = b"filterload"
+
+    def __init__(self, protover=PROTO_VERSION, bloom_filter="", hash_funcs=0, tweak=0, flags=0):
+        super(msg_filterload, self).__init__(protover)
+        self.filter = bloom_filter
+        self.hash_funcs = hash_funcs
+        self.tweak = tweak
+        self.flags = flags
+
+    @classmethod
+    def msg_deser(cls, f, protover=PROTO_VERSION):
+        raise Exception("derp")
+
+    def msg_ser(self, f):
+        VarStringSerializer.stream_serialize(self.filter, f)
+        f.write(struct.pack(b"<IIB", self.hash_funcs, self.tweak, self.flags))
+
+    def __repr__(self):
+        return "msg_filterload(%d)" % (len(self.filter),)
+
+class msg_getutxos(MsgSerializable):
+    command = b"getutxos"
+
+    def __init__(self, protover=PROTO_VERSION, check_mempool=True):
+        super(msg_getutxos, self).__init__(protover)
+        self.check_mempool = check_mempool
+        self.out_points = []
+
+    @classmethod
+    def msg_deser(cls, f, protover=PROTO_VERSION):
+        raise Exception("derp")
+
+    def msg_ser(self, f):
+        f.write(struct.pack(b"<B", self.check_mempool))
+        VectorSerializer.stream_serialize(COutPoint, self.out_points, f)
+
+    def __repr__(self):
+        return "msg_getutxos(%d, %d)" % (self.check_mempool, len(self.out_points),)
+
 msg_classes = [msg_version, msg_verack, msg_addr, msg_alert, msg_inv,
                msg_getdata, msg_notfound, msg_getblocks, msg_getheaders,
                msg_headers, msg_tx, msg_block, msg_getaddr, msg_ping,
-               msg_pong, msg_reject, msg_mempool]
+               msg_pong, msg_reject, msg_mempool, msg_filterload]
 
 messagemap = {}
 for cls in msg_classes:
