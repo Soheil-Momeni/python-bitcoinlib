@@ -519,7 +519,10 @@ class msg_filterload(MsgSerializable):
 
     @classmethod
     def msg_deser(cls, f, protover=PROTO_VERSION):
-        raise Exception("derp")
+        c = cls()
+        c.filter = VarStringSerializer.stream_deserialize(f)
+        c.hash_funcs, c.tweak, c.flags = struct.unpack(b"<IIB", ser_read(f, 4 + 4 + 1))
+        return c
 
     def msg_ser(self, f):
         VarStringSerializer.stream_serialize(self.filter, f)
