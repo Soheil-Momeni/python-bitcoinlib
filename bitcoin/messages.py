@@ -541,7 +541,10 @@ class msg_getutxos(MsgSerializable):
 
     @classmethod
     def msg_deser(cls, f, protover=PROTO_VERSION):
-        raise Exception("derp")
+        c = cls()
+        c.check_mempool = struct.unpack(b"<B", ser_read(f, 1))[0]
+        c.out_points = VectorSerializer.stream_deserialize(COutPoint, f)
+        return c
 
     def msg_ser(self, f):
         f.write(struct.pack(b"<B", self.check_mempool))
