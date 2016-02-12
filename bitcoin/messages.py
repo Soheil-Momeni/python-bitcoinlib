@@ -143,6 +143,7 @@ class msg_version(MsgSerializable):
         self.strSubVer = (b'/python-bitcoinlib:' +
                           bitcoin.__version__.encode('ascii') + b'/')
         self.nStartingHeight = -1
+        self.fRelayTransactions = 1
 
     @classmethod
     def msg_deser(cls, f, protover=PROTO_VERSION):
@@ -161,6 +162,10 @@ class msg_version(MsgSerializable):
                 c.nStartingHeight = struct.unpack(b"<i", ser_read(f,4))[0]
             else:
                 c.nStartingHeight = None
+            try:
+                c.fRelayTransactions = struct.unpack(b"B", ser_read(f,1))[0]
+            except SerializationTruncationError:
+                pass
         else:
             c.addrFrom = None
             c.nNonce = None
@@ -177,6 +182,7 @@ class msg_version(MsgSerializable):
         f.write(struct.pack(b"<Q", self.nNonce))
         VarStringSerializer.stream_serialize(self.strSubVer, f)
         f.write(struct.pack(b"<i", self.nStartingHeight))
+        f.write(struct.pack(b"B", self.fRelayTransactions))
 
     def __repr__(self):
         return "msg_version(nVersion=%i nServices=%i nTime=%s addrTo=%s addrFrom=%s nNonce=0x%016X strSubVer=%s nStartingHeight=%i)" % (self.nVersion, self.nServices, time.ctime(self.nTime), repr(self.addrTo), repr(self.addrFrom), self.nNonce, self.strSubVer, self.nStartingHeight)
