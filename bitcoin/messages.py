@@ -123,13 +123,11 @@ class MsgSerializable(Serializable):
             #        print("Going to deserialize '%s'" % msg)
             return cls.msg_deser(_BytesIO(msg))
         else:
-            print("Command '%s' not in messagemap" % repr(command))
-            return None
+            raise ValueError("Command '%s' not in messagemap" % repr(command))
 
     def stream_serialize(self, f):
         data = self.to_bytes()
         f.write(data)
-
 
 class msg_version(MsgSerializable):
     command = b"version"
