@@ -557,7 +557,7 @@ class msg_getutxos(MsgSerializable):
 msg_classes = [msg_version, msg_verack, msg_addr, msg_alert, msg_inv,
                msg_getdata, msg_notfound, msg_getblocks, msg_getheaders,
                msg_headers, msg_tx, msg_block, msg_getaddr, msg_ping,
-               msg_pong, msg_reject, msg_mempool, msg_filterload]
+               msg_pong, msg_reject, msg_mempool, msg_filterload, msg_getutxos]
 
 messagemap = {}
 for cls in msg_classes:
