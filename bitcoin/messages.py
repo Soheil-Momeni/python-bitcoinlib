@@ -584,6 +584,8 @@ __all__ = (
         'msg_ping',
         'msg_pong',
         'msg_mempool',
+        'msg_filterload',
+        'msg_getutxos',
         'msg_classes',
         'messagemap',
 )
