@@ -560,10 +560,27 @@ class msg_getutxos(MsgSerializable):
     def __repr__(self):
         return "msg_getutxos(%d, %d)" % (self.check_mempool, len(self.out_points),)
 
+class msg_sendheaders(MsgSerializable):
+    command = b"sendheaders"
+
+    def __init__(self, protover=PROTO_VERSION):
+        super(msg_sendheaders, self).__init__(protover)
+
+    @classmethod
+    def msg_deser(cls, f, protover=PROTO_VERSION):
+        return cls()
+
+    def msg_ser(self, f):
+        pass
+
+    def __repr__(self):
+        return "msg_sendheaders()"
+
 msg_classes = [msg_version, msg_verack, msg_addr, msg_alert, msg_inv,
                msg_getdata, msg_notfound, msg_getblocks, msg_getheaders,
                msg_headers, msg_tx, msg_block, msg_getaddr, msg_ping,
-               msg_pong, msg_reject, msg_mempool, msg_filterload, msg_getutxos]
+               msg_pong, msg_reject, msg_mempool, msg_filterload, msg_getutxos,
+               msg_sendheaders]
 
 messagemap = {}
 for cls in msg_classes:
@@ -592,6 +609,7 @@ __all__ = (
         'msg_mempool',
         'msg_filterload',
         'msg_getutxos',
+        'msg_sendheaders',
         'msg_classes',
         'messagemap',
 )
